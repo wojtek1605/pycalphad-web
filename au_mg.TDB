@@ -1,0 +1,116 @@
+
+$ Database file written 2023-10-10
+$ From database: PURE5                   
+ ELEMENT /-   ELECTRON_GAS              0.0000E+00  0.0000E+00  0.0000E+00!
+ ELEMENT VA   VACUUM                    0.0000E+00  0.0000E+00  0.0000E+00!
+ ELEMENT AU   FCC_A1                    1.9697E+02  6.0166E+03  4.7488E+01!
+ ELEMENT MG   HCP_A3                    2.4305E+01  4.9980E+03  3.2671E+01!
+ 
+ 
+ FUNCTION GLIQAU    298.15 +GHSERAU#+12552-9.385866*T; 3200 N !
+ FUNCTION GHSERAU   298.15 -6938.856+106.830098*T-22.75455*T*LN(T)
+     -.00385924*T**2+3.79625E-07*T**3-25097*T**(-1); 929.40 Y
+      -93586.481+1021.69543*T-155.706745*T*LN(T)+.08756015*T**2
+     -1.1518713E-05*T**3+10637210*T**(-1); 1337.33 Y
+      +314067.829-2016.37825*T+263.252259*T*LN(T)-.118216828*T**2
+     +8.923844E-06*T**3-67999832*T**(-1); 1735.80 Y
+      -12133.783+165.272524*T-30.9616*T*LN(T); 3200 N !
+ FUNCTION GBCCAU    298.15 +GHSERAU#+4250-1.1*T; 3200 N !
+ FUNCTION GHCPAU    298.15 +GHSERAU#+240.75+1.6*T; 3200 N !
+ FUNCTION GLIQMG    298.15 +GHSERMG#+8202.243-8.83693*T-8.0176E-20*T**7; 923
+     Y
+      -5439.869+195.324057*T-34.3088*T*LN(T); 3000 N !
+ FUNCTION GFCCMG    298.15 +GHSERMG#+2600-.9*T; 3000 N !
+ FUNCTION GBCCMG    298.15 +GHSERMG#+3100-2.1*T; 3000 N !
+ FUNCTION GHSERMG   298.15 -8367.34+143.675547*T-26.1849782*T*LN(T)
+     +4.858E-04*T**2-1.393669E-06*T**3+78950*T**(-1); 923 Y
+      -14130.185+204.716215*T-34.3088*T*LN(T)+1.038192E+28*T**(-9); 3000 N !
+ FUNCTION UN_ASS 298.15 +0; 300 N !
+ 
+ TYPE_DEFINITION % SEQ *!
+ DEFINE_SYSTEM_DEFAULT ELEMENT 2 !
+ DEFAULT_COMMAND DEF_SYS_ELEMENT VA /- !
+
+
+ PHASE LIQUID  %  1  1.0  !
+    CONSTITUENT LIQUID  :AU,MG :  !
+
+   PARAMETER G(LIQUID,AU;0)               298.15 +GLIQAU#; 3200 N REF2 !
+   PARAMETER G(LIQUID,MG;0)               298.15 +GLIQMG#; 3000 N REF2 !
+
+
+ TYPE_DEFINITION & GES A_P_D BCC_A2 MAGNETIC  -1.0    4.00000E-01 !
+ PHASE BCC_A2  %&  2 1   3 !
+    CONSTITUENT BCC_A2  :AU,MG : VA :  !
+
+   PARAMETER G(BCC_A2,AU:VA;0)            298.15 +GBCCAU#; 3200 N REF2 !
+   PARAMETER G(BCC_A2,MG:VA;0)            298.15 +GBCCMG#; 3000 N REF2 !
+
+
+ TYPE_DEFINITION ' GES A_P_D CBCC_A12 MAGNETIC  -3.0    2.80000E-01 !
+ PHASE CBCC_A12  %'  2 1   1 !
+    CONSTITUENT CBCC_A12  :MG : VA :  !
+
+   PARAMETER G(CBCC_A12,MG:VA;0)          298.15 +GHSERMG#+4602.4-3.011*T;
+  3000 N REF2 !
+
+
+ PHASE CUB_A13  %  2 1   1 !
+    CONSTITUENT CUB_A13  :MG : VA :  !
+
+   PARAMETER G(CUB_A13,MG:VA;0)           298.15 +GHSERMG#+5000-3*T; 3000 N
+  REF2 !
+
+
+ PHASE DHCP  %  1  1.0  !
+    CONSTITUENT DHCP  :AU :  !
+
+   PARAMETER G(DHCP,AU;0)                 298.15 +GHSERAU#+5000; 3200 N REF4 !
+
+
+ TYPE_DEFINITION ( GES A_P_D FCC_A1 MAGNETIC  -3.0    2.80000E-01 !
+ PHASE FCC_A1  %(  2 1   1 !
+    CONSTITUENT FCC_A1  :AU,MG : VA :  !
+
+   PARAMETER G(FCC_A1,AU:VA;0)            298.15 +GHSERAU#; 3200 N REF1 !
+   PARAMETER G(FCC_A1,MG:VA;0)            298.15 +GFCCMG#; 3000 N REF2 !
+
+
+ TYPE_DEFINITION ) GES A_P_D HCP_A3 MAGNETIC  -3.0    2.80000E-01 !
+ PHASE HCP_A3  %)  2 1   .5 !
+    CONSTITUENT HCP_A3  :AU,MG : VA :  !
+
+   PARAMETER G(HCP_A3,AU:VA;0)            298.15 +GHCPAU#; 3200 N REF2 !
+   PARAMETER G(HCP_A3,MG:VA;0)            298.15 +GHSERMG#; 3000 N REF1 !
+
+
+ PHASE HCP_ZN  %  2 1   .5 !
+    CONSTITUENT HCP_ZN  :MG : VA :  !
+
+   PARAMETER G(HCP_ZN,MG:VA;0)            298.15 +GHSERMG#+100; 3000 N REF3 !
+
+
+ PHASE LAVES_C15  %  2 2   1 !
+    CONSTITUENT LAVES_C15  :MG : MG :  !
+
+   PARAMETER G(LAVES_C15,MG:MG;0)         298.15 -10102.02+431.026641*T
+  -78.5549346*T*LN(T)+.0014574*T**2-4.181007E-06*T**3+236850*T**(-1); 923 Y
+   -27390.555+614.148645*T-102.9264*T*LN(T)+3.11458E+28*T**(-9); 3000 N REF3 !
+
+ LIST_OF_REFERENCES
+ NUMBER  SOURCE
+   REF2     'PURE3 - SGTE Pure Elements (Unary) Database (Version 3.0),
+           developed by SGTE (Scientific Group Thermodata Europe), 1991-1996,
+            and provided by TCSAB (Aug. 1996). '
+   REF1     'PURE1 - SGTE Pure Elements (Unary) Database (Version 1.0),
+           developed by SGTE (Scientific Group Thermodata Europe), 1991-1992,
+            and provided by TCSAB (Jan. 1991). Also in: Dinsdale A. (1991):
+           SGTE data for pure elements, Calphad, 15, 317-425.'
+   REF4     'PURE5 - SGTE Pure Elements (Unary) Database (Version 5.1),
+           developed by SGTE (Scientific Group Thermodata Europe), 1991-2010,
+            and provided by TCSAB (Jun. 2010). '
+   REF3     'PURE4 - SGTE Pure Elements (Unary) Database (Version 4.6),
+           developed by SGTE (Scientific Group Thermodata Europe), 1991-2008,
+            and provided by TCSAB (Jan. 2008). '
+  ! 
+ 

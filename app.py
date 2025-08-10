@@ -19,10 +19,10 @@ def calculate():
         db_file = 'ag_al.TDB'
         phases = ['LIQUID', 'FCC_A1']
         comps = ['AG', 'AL', 'VA']
-    elif system == 'fe_mn':
-        db_file = 'fe_mn.TDB'
-        phases = ['LIQUID', 'BCC_A2']
-        comps = ['FE', 'MN', 'VA']
+    elif system == 'au_mg':
+        db_file = 'au_mg.TDB'
+        phases = ['LIQUID', 'FCC_A1', 'HCP_A3']
+        comps = ['AU', 'MG', 'VA']
     else:
         return "Unknown system", 400
 
