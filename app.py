@@ -30,7 +30,7 @@ def calculate():
     axes = fig.gca()
     binplot(db_agal, ['AG', 'AL', 'VA'] , phases, {v.X('AL'):(0,1,0.02), v.T: (300, 1500, 10), v.P:101325, v.N: 1}, plot_kwargs={'ax': axes})
 
-    plt.show()
+   
     
     
     
