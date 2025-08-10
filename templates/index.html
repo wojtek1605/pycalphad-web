@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PyCalphad Phase Diagram Generator</title>
+</head>
+<body>
+    <h1>Select System and Generate Diagram</h1>
+    <form id="calcForm">
+        <label for="system">Choose system:</label>
+        <select id="system" name="system">
+            <option value="ag_al">Ag-Al</option>
+            <option value="fe_mn">Fe-Mn</option>
+        </select>
+        <button type="submit">Generate Diagram</button>
+    </form>
+
+    <h2>Resulting Phase Diagram:</h2>
+    <img id="resultImage" src="" alt="Your phase diagram will appear here" style="max-width: 600px;">
+
+    <script>
+    const form = document.getElementById('calcForm');
+    const resultImage = document.getElementById('resultImage');
+
+    form.addEventListener('submit', event => {
+        event.preventDefault();  // Prevent full page reload
+
+        const system = form.system.value;
+
+        // Build URL with query params for your backend
+        const url = `/calculate?system=${system}`;
+
+        // Update the image source to fetch the new plot
+        resultImage.src = url + '&_=' + new Date().getTime();  // cache buster
+    });
+    </script>
+</body>
+</html>
