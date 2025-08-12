@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Phase Diagram / Solidification Calculator</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; max-width: 900px; }
+  label { display: block; margin-top: 8px; }
+  .row { margin-bottom: 12px; }
+  .hidden { display: none; }
+  #result_img { max-width: 100%; border: 1px solid #ddd; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <h1>Thermodynamic Calculator</h1>
+
+  <div class="row">
+    <label for="system">System</label>
+    <select id="system">
+      <option value="ag_al">Ag-Al</option>
+      <option value="au_mg">Au-Mg</option>
+      <!-- add more systems here -->
+    </select>
+  </div>
+
+  <div class="row">
+    <label>Calculation type</label>
+    <label><input type="radio" name="type" value="phase-diagram" checked> Phase diagram</label>
+    <label><input type="radio" name="type" value="solidification"> Solidification path</label>
+  </div>
+
+  <!-- Phase diagram inputs -->
+  <div id="phase_fields">
+    <label>Temperature min (K): <input id="T_min" type="number" value="300"></label>
+    <label>Temperature max (K): <input id="T_max" type="number" value="1500"></label>
+    <label>Composition X min (0..1): <input id="X_min" step="0.01" type="number" value="0.0"></label>
+    <label>Composition X max (0..1): <input id="X_max" step="0.01" type="number" value="1.0"></label>
+  </div>
+
+  <!-- Solidification inputs -->
+  <div id="solid_fields" class="hidden">
+    <label>Starting temperature T_start (K): <input id="T_start" type="number" value="1500"></label>
+    <label>Composition X (0..1): <input id="X_value" step="0.01" type="number" value="0.5"></label>
+  </div>
+
+  <div class="row">
+    <button id="calculateBtn">Run Calculation</button>
+    <span id="status" style="margin-left:10px;color:gray"></span>
+  </div>
+
+  <h3>Result</h3>
+  <img id="result_img" alt="Result will appear here">
+
+<script>
+(function(){
+  const radios = document.querySelectorAll('input[name="type"]');
+  const phaseFields = document.getElementById('phase_fields');
+  const solidFields = document.getElementById('solid_fields');
+  const btn = document.getElementById('calculateBtn');
+  const status = document.getElementById('status');
+  const resultImg = document.getElementById('result_img');
+  let currentObjectUrl = null;
+
+  radios.forEach(r => r.addEventListener('change', () => {
+    if (document.querySelector('input[name="type"]:checked').value === 'phase-diagram') {
+      phaseFields.classList.remove('hidden');
+      solidFields.classList.add('hidden');
+    } else {
+      phaseFields.classList.add('hidden');
+      solidFields.classList.remove('hidden');
+    }
+  }));
+
+  btn.addEventListener('click', async () => {
+    const type = document.querySelector('input[name="type"]:checked').value;
+    const system = document.getElementById('system').value;
+    let payload = { type: type, system: system };
+
+    if (type === 'phase-diagram') {
+      payload.T_min = parseFloat(document.getElementById('T_min').value);
+      payload.T_max = parseFloat(document.getElementById('T_max').value);
+      payload.X_min = parseFloat(document.getElementById('X_min').value);
+      payload.X_max = parseFloat(document.getElementById('X_max').value);
+    } else {
+      payload.T_start = parseFloat(document.getElementById('T_start').value);
+      payload.X_value = parseFloat(document.getElementById('X_value').value);
+    }
+
+    // Basic validation
+    if (Number.isNaN(payload.T_min) && type === 'phase-diagram') { alert('Enter Tmin'); return; }
+
+    status.textContent = 'Calculating...';
+    btn.disabled = true;
+
+    try {
+      const resp = await fetch('/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(()=>null);
+        throw new Error(err && err.error ? err.error : `HTTP ${resp.status}`);
+      }
+
+      // response is image blob
+      const blob = await resp.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      // revoke previous to avoid leaks
+      if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+      currentObjectUrl = objectUrl;
+
+      resultImg.src = objectUrl;
+      status.textContent = 'Done';
+    } catch (err) {
+      console.error(err);
+      alert('Error: ' + err.message);
+      status.textContent = 'Error';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
