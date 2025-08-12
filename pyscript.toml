@@ -1,2 +1,0 @@
-name = "Pycalphad"
-packages = ["matplotlib"]
